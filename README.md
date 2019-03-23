@@ -1,68 +1,318 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# React Styled-Component
 
-## Available Scripts
+- [노마드 코더 styled-components](https://academy.nomadcoders.co)
+- [공식홈](https://www.styled-components.com/docs)
 
-In the project directory, you can run:
+## Basic
 
-### `npm start`
+- `styled-components` 을 사용해서 스타일링 할 수 있다.
+- `this` -> `&` 로 내부에서 사용가능
+- `props` 도 사용 가능하다.
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+```
+import React, { Component, Fragment } from 'react';
+import styled from 'styled-components';
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
 
-### `npm test`
+class App extends Component {
+  render() {
+    return (
+      <Container>
+        <Button>Success</Button>
+        <Button danger>Danger</Button>
+      </Container>
+    );
+  }
+}
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+const Container = styled.div`
+  height: 100vh;
+  width: 100%;
+  background-color: #bdc3c7;
+`
 
-### `npm run build`
+const Button = styled.button`
+  border-radius: 50px;
+  padding: 5px;
+  min-width: 120px;
+  color: white;
+  font-weight: 600;
+  -webkit-appearance: none;
+  cursor: pointer;
+  &:active,
+  &:focus {
+    outline: none;
+  }
+  background-color: ${props => props.danger ? "#e74c3c" : "#3498db"}
+`
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
+export default App;
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+```
+![](2019-03-23-10-10-30.png)
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### GlobalStyle 적용시
 
-### `npm run eject`
+```
+import React, { Component, Fragment } from 'react';
+import styled, { createGlobalStyle } from 'styled-components';
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+const GlobalStyle = createGlobalStyle`
+  body {
+    margin: 100px;
+    padding: 100px;
+    background-color: red;
+  }
+`
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+class App extends Component {
+  render() {
+    return (      
+        <Container>
+          <GlobalStyle />
+          <Button>Success</Button>
+          <Button danger>Danger</Button>
+        </Container>           
+    );
+  }
+}
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+const Container = styled.div`
+  height: 300px;
+  width: 300px;  
+  background-color: blue;
+`
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+const Button = styled.button`
+  border-radius: 50px;
+  padding: 5px;
+  min-width: 120px;
+  color: white;
+  font-weight: 600;
+  -webkit-appearance: none;
+  cursor: pointer;
+  &:active,
+  &:focus {
+    outline: none;
+  }
+  background-color: ${props => props.danger ? "#e74c3c" : "#3498db"}
+`
 
-## Learn More
+export default App;
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+![](2019-03-23-10-19-34.png)
 
-### Code Splitting
+### extenstion
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
+기존 컴포넌트를 확장해서 새로운 태그를 만들어낼 수 있다.
 
-### Analyzing the Bundle Size
+```
+const Anchor = Button.withComponent("a");
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
+<Anchor href="http://naver.com">Go to Naver</Anchor>
+```
 
-### Making a Progressive Web App
+추가적으로 더 확장을 할 수 있다. 
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
+이전버전에서는 `.extend` 로 가능했지만 새로 바뀐 내용은 `styled` 로 묶어줘야 한다. 
 
-### Advanced Configuration
+```
+// a tag 밑줄 제거
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
+const Anchor = styled(Button.withComponent("a"))`
+  text-decoration:none;
+`;
+```
 
-### Deployment
+### animation
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
+- `css, keyframes` 추가
+- `keyframe`
+- `props`에 `duration` 설정 후 `styled-components` 에서 속성으로 사용가능
 
-### `npm run build` fails to minify
+```
+import React, { Component, Fragment } from 'react';
+import styled, { createGlobalStyle, css, keyframes } from 'styled-components';
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+const GlobalStyle = createGlobalStyle`
+  body {
+    margin: 100px;
+    padding: 100px;
+    background-color: red;
+  }
+`
+
+class App extends Component {
+  render() {
+    return (      
+        <Container>
+          <GlobalStyle />
+          <Button>Success</Button>
+          <Button danger duration={1}>Danger</Button>
+          <Anchor href="http://naver.com">Go to Naver</Anchor>
+        </Container>           
+    );
+  }
+}
+
+const Container = styled.div`
+  height: 300px;
+  width: 700px;  
+  background-color: blue;
+`
+
+const Button = styled.button`
+  border-radius: 50px;
+  padding: 5px;
+  min-width: 120px;
+  color: white;
+  font-weight: 600;
+  -webkit-appearance: none;
+  cursor: pointer;
+  &:active,
+  &:focus {
+    outline: none;
+  }
+  background-color: ${props => props.danger ? "#e74c3c" : "#3498db"}
+  ${props => {
+    if(props.danger) {
+      return css`animation: ${rotation} ${props.duration}s linear infinite`
+    }
+  }}
+`
+
+const Anchor = styled(Button.withComponent("a"))`
+  text-decoration:none;
+`;
+
+const rotation = keyframes`
+  from{
+    transform: rotate(0deg);
+  }
+  to{
+    transform: rotate(360deg);
+  }
+`
+
+export default App;
+
+```
+
+### Theme
+
+#### attrs
+
+```
+const Input = styled.input.attrs({
+  required: true
+})`
+  border-radius: 5px;
+`
+
+class App extends Component {
+  render() {
+    return (      
+        <Container>
+          <GlobalStyle />          
+          <Input placeholder="hello"/>
+        </Container>           
+    );
+  }
+}
+```
+
+#### css
+
+컴포넌트에 `css`를 추가적으로 적용하고 싶을때
+
+```
+const awesomeCard = css`
+  background-color: white;
+  border-radius: 10px;
+  padding: 20px;
+`
+
+const Input = styled.input.attrs({
+  required: true
+})`
+  border-radius: 5px;  
+  ${awesomeCard}
+`
+```
+
+#### Global Theme
+
+- 전체 APP 내 공통 색상을 정의를 해서 `props`로 사용이 가능하다. 
+
+1. `ThemeProvider` 를 import 한다. 
+2. `theme.js` 를 적용한다. 
+3. `Component`에 props 로 추가한다. 
+   1. `background-color: ${props => props.theme.successColor}`
+
+```
+import React, { Component } from 'react';
+import styled, { createGlobalStyle, ThemeProvider } from 'styled-components';
+import theme from './theme';
+
+const GlobalStyle = createGlobalStyle`
+  body {
+    margin: 0px;
+    padding: 0px;    
+  }
+`;
+
+
+class App extends Component {
+  render() {
+    return (      
+      <ThemeProvider theme={theme}>
+        <Container>
+          <GlobalStyle />          
+          <Form />
+        </Container> 
+      </ThemeProvider>          
+    );
+  }
+}
+
+const Container = styled.div`
+  height: 100%;
+  width: 100vh;    
+`
+
+const Button = styled.button`
+  border-radius: 30px;
+  padding: 25px 15px;
+  background-color: ${props => props.theme.successColor}
+`
+
+const Card = styled.div`
+  background-color:white;
+`
+
+const Form = () => (
+  <Card><Button>Hello</Button></Card>
+)
+
+export default App;
+
+```
+
+### Nesting
+
+부모 컴포넌트에서 자식 컴포넌트 속성 체크를 할 수 있다.
+
+```
+const Container = styled.div`
+  height: 100%;
+  width: 100vh;    
+  background-color: yellow;
+  ${Card}{
+    background-color: blue;
+  }
+`
+```
+
+이상으로 Styled-Components 기본 스터디 내용이었다. 
